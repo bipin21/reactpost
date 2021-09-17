@@ -1,0 +1,28 @@
+.Login {
+    display: block;
+    justify-content: center;
+    width: 45%;
+    clear: both;
+    background-color: #9ba7b7;
+    margin: 10px auto;
+    padding: 25px;
+}
+
+.formrow {
+    clear: both;
+    margin: 10px;
+    padding: 5px;
+}
+
+.formrow label {
+    margin-right: 10px;
+}
+
+.formrow button {
+    padding: 5px;
+    margin: 15px;
+}
+
+.formrow input{
+    width: 50%;
+}

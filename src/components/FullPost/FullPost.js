@@ -34,7 +34,7 @@ const FullPost = (props) => {
 
     const deletePost = (id) => {
         console.log(id)
-        axios.delete(`${postAPI}/${id}`)
+        axios.delete(`${postAPI}${id}`)
             .then(response => {
                 props.history.push('/');
             }

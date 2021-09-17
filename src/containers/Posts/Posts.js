@@ -9,7 +9,6 @@ import { APIConfig } from '../../Store/APIConfig';
 
 
 const Posts = (props) => {
-
     const APIs = useContext(APIConfig);
     const postAPI = APIs.postAPI;
 
@@ -27,7 +26,7 @@ const Posts = (props) => {
         setLoading(true);
         setError(null); // this is to set the error to null, if there were any previous errors existing 
         //console.log(isLoading);
-        axios.get(postAPI)
+        axios.get(postAPI, {headers})
             .then(response => {
                 setPosts(response.data);
             })
@@ -64,9 +63,11 @@ const Posts = (props) => {
         content = <p>{error}</p>;
     }
     else if (isLoading) {
-        content = <p> Loading ... </p>;  // BONUS MAKE THIS WAIT FOR A 30 seconds
+        setTimeout(() => {
+            content = <p> Loading ... </p>;  
+        }, 3000); 
     }
-
+    
     return (
         <div>
             <section className="Posts">
