@@ -1,81 +1,44 @@
 import React, { useState } from 'react';
-import { useEffect } from 'react';
-
-import Post from '../../components/Post/Post';
-import FullPost from '../../components/FullPost/FullPost';
-import NewPost from '../../components/NewPost/NewPost';
 import './Blog.css';
-import axios from 'axios';
-import { APIConfig } from '../../components/APIConfig';
+import { APIConfig } from '../../Store/APIConfig';
+import { Redirect, Route, Switch } from 'react-router';
+import Posts from '../Posts/Posts';
+import NewPost from '../../components/NewPost/NewPost';
+import Header from '../Header/Header';
+import { LikedPosts } from '../../Store/LikedPosts';
+import Login from '../../components/Login/Login';
+import { useSelector } from 'react-redux';
+import UserProfile from '../../components/UserProfile/UserProfile';
+import Followings from '../Posts/Followings';
 
-const Blog = () => {
-
-    const [posts, setPosts] = useState([]);
-    const base = 'http://localhost:8088';
-    const [selectedId, setSelectedId] = useState(null);
-    const [flag, setFlag] = useState(true);
-
-
-    function fetchPostsHandler() {
-            // axios.get('https://jsonplaceholder.typicode.com/posts')
-            axios.get('http://localhost:8088/posts')
-                .then(response => {
-                    const sposts = response.data.slice(0, 10);  // This will get them but take the first 5 then you would have to change the response.data i nthe setPosts
-                    const updatedPosts = sposts.map(post => {  // This will transform anything before assigning it to the state
-                        return {
-                            ...post,
-                            author: ' Dean'
-                        }
-                    });
-                    setPosts([...updatedPosts]);
-                    // setPosts([...response.data]);   // if you dont want to limit
-                });
-    }
-    useEffect(fetchPostsHandler, [flag]);
+const Blog = (props) => {
+    const base = 'http://localhost:8080';
     
-    const postSelectedHandler = (id) => {
-        setSelectedId(id);
-    }
 
-    const updateFlag = () => {
-        setFlag(!flag);
-    }
-
-    // We can do this rather than this :: <Post title={{...posts[1]}.title} />
-    const rposts = posts.map(post => {
-        return <Post
-            key={post.id}
-            title={post.title}
-            author={post.author}
-            clicked={() => { postSelectedHandler(post.id) }} />
-    });
-
+    const [likedPosts, setLikedPosts] = useState([]);
     // 
     return (
-        <APIConfig.Provider
-            value={
-                {
-                    postApi: base + '/posts'
-                }
-            }>
-            <div>
-                <section className="Posts">
-                    {rposts}
-                </section>
-                <section>
-                    <FullPost
-                        id={selectedId}
-                        title={{ ...posts[selectedId - 1] }.title}
-                        body={{ ...posts[selectedId - 1] }.body}
-                        execute={updateFlag}
-                    />
-
-                </section>
-                <section>
-                    <NewPost execute={updateFlag} />
-                </section>
-            </div>
-        </APIConfig.Provider>
+        <LikedPosts.Provider value={{ likedPosts, setLikedPosts }}>
+            <APIConfig.Provider
+                value={
+                    {
+                        postAPI: base + '/posts/'
+                    }
+                }>
+                   
+                <div className="Blog">
+                    <Header />
+                    <Switch>
+                        <Route exact path="/new-post" component={NewPost} />
+                        <Route path="/posts" component={Posts} />
+                        <Route path="/login" component={Login} />
+                        {/* <Route exact path='/user' component={UserProfile} /> */}
+                        <Route path="/followings" component={Followings} />
+                        <Redirect exact from="/" to="/posts" />
+                    </Switch>
+                </div>
+            </APIConfig.Provider>
+        </LikedPosts.Provider>
     );
 }
 
